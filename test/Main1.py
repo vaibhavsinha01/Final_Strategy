@@ -11,7 +11,7 @@ import hashlib
 import time
 import urllib.parse
 import base64
-import Creds
+import main.Creds as Creds
 
 class StrategyName:
     def FetchData(self):

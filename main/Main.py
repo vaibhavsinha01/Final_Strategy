@@ -11,16 +11,30 @@ import hashlib
 import time
 import urllib.parse
 import base64
-import Creds
-from backtesting import Backtest,Strategy
-from backtesting.test import EURUSD,GOOG
+import main.Creds as Creds
+
+class StrategyName:
+    def FetchData(self):
+        pass
+
+    def Functions(self):
+        pass
+
+    def Signal(self):
+        pass
+
+    def ExecuteTrades(self):
+        pass
+
+    def LogicPL(self):
+        pass
+
+    def Plot(self):
+        pass
 
 
-class StrategyName(Strategy):
-    def init(self):
-        pass
-    def next(self):
-        pass
+class RiskManagement:
+    pass
 
 def main():
     pass

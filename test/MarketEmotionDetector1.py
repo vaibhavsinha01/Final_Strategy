@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 
-stocks=['Bajaj Finance','Adani Enterprises']
+stocks=['Bajaj Finance']
 
 def get_news(api_key, company_name, num_articles=100, days_ago=1):
     start_date = (datetime.now() - timedelta(days=days_ago)).strftime('%Y-%m-%d')
