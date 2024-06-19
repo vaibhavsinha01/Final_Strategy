@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 import warnings
 warnings.filterwarnings("ignore")
 import yfinance as yf
@@ -19,7 +20,7 @@ from sklearn.linear_model import BayesianRidge
 # for AAPL the SVR/MLP model is showing a win rate of 100 % so check that.
 # for GOOGL the SVR has 0% win rate and MLP has 100% win rate so check that error.
 # Download data
-data = yf.download('GOOGL')
+data = yf.download('RELIANCE.NS')
 data.drop('Adj Close', axis=1, inplace=True)
 
 def feature_engineering(data):
@@ -150,18 +151,26 @@ def calculate_performance(position_column):
     no_of_noreturn = 0
     no_of_error = 0
 
-    for i in range(int(0.9*len(df)), len(df)-1):
-        if df[position_column].iloc[i-1] == 1 and df['returns'].iloc[i] > 0:
-            no_of_wins += 1
-        elif df[position_column].iloc[i-1] == -1 and df['returns'].iloc[i] < 0:
-            no_of_losses += 1
-        elif df[position_column].iloc[i-1] != 1 and df[position_column].iloc[i-1] != -1:
-            no_of_noreturn += 1
-        else:
-            no_of_error += 1
+    for i in range(split, len(df) - 1):
+        position = df[position_column].iloc[i]
+        next_return = df['returns'].iloc[i + 1]
 
-    win_rate = (no_of_wins / (no_of_wins + no_of_losses)) * 100
-    error_rate = (no_of_error / len(df)) * 100
+        if position == 1:
+            if next_return > 0:
+                no_of_wins += 1
+            else:
+                no_of_losses += 1
+        elif position == -1:
+            if next_return < 0:
+                no_of_wins += 1
+            else:
+                no_of_losses += 1
+        else:
+            no_of_noreturn += 1
+
+    total_trades = no_of_wins + no_of_losses + no_of_noreturn
+    win_rate = (no_of_wins / total_trades) * 100 if total_trades > 0 else 0
+    error_rate = (no_of_losses / total_trades) * 100 if total_trades > 0 else 0
 
     return no_of_wins, no_of_losses, no_of_noreturn, win_rate, error_rate
 
@@ -184,3 +193,5 @@ print(f'SVR Model:\nNumber of wins: {performance_svr[0]}\nNumber of losses: {per
 print(f'K Neighbors Model:\nNumber of wins: {performance_knn[0]}\nNumber of losses: {performance_knn[1]}\nNumber of no returns: {performance_knn[2]}\nWin rate: {performance_knn[3]:.2f}%\nError rate: {performance_knn[4]:.2f}%\n')
 print(f'MLP Model:\nNumber of wins: {performance_mlp[0]}\nNumber of losses: {performance_mlp[1]}\nNumber of no returns: {performance_mlp[2]}\nWin rate: {performance_mlp[3]:.2f}%\nError rate: {performance_mlp[4]:.2f}%\n')
 print(f'Bayesian Ridge Model:\nNumber of wins: {performance_br[0]}\nNumber of losses: {performance_br[1]}\nNumber of no returns: {performance_br[2]}\nWin rate: {performance_br[3]:.2f}%\nError rate: {performance_br[4]:.2f}%\n')
+print(df)
+df.to_csv(os.path.join('data','file.csv'))
