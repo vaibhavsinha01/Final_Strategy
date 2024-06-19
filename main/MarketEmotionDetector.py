@@ -3,7 +3,62 @@ from datetime import datetime, timedelta
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-stocks = ['Reliance']
+"""stocks = [
+    'Apple Inc.',
+    'Microsoft Corporation',
+    'Alphabet Inc.',
+    'Amazon.com, Inc.',
+    'Facebook, Inc. (Meta Platforms, Inc.)',
+    'Tesla, Inc.',
+    'Berkshire Hathaway Inc.',
+    'Johnson & Johnson',
+    'JPMorgan Chase & Co.',
+    'Visa Inc.',
+    'Procter & Gamble Co.',
+    'UnitedHealth Group Incorporated',
+    'Mastercard Incorporated',
+    'The Home Depot, Inc.',
+    'NVIDIA Corporation',
+    'PayPal Holdings, Inc.',
+    'Intel Corporation',
+    'Adobe Inc.',
+    'Netflix, Inc.',
+    'The Walt Disney Company',
+    'Cisco Systems, Inc.',
+    'PepsiCo, Inc.',
+    'Pfizer Inc.',
+    'Nike, Inc.',
+    'Coca-Cola Company',
+    'Exxon Mobil Corporation'
+]"""
+stocks = [
+    'Bitcoin',
+    'Ethereum',
+    'Binance Coin',
+    'Cardano',
+    'Solana',
+    'Ripple (XRP)',
+    'Polkadot',
+    'Dogecoin',
+    'Shiba Inu',
+    'Litecoin',
+    'Chainlink',
+    'Uniswap',
+    'Stellar',
+    'Polygon (MATIC)',
+    'Avalanche',
+    'Terra (LUNA)',
+    'VeChain',
+    'Tron',
+    'Cosmos (ATOM)',
+    'Tezos',
+    'Monero',
+    'Algorand',
+    'Aave',
+    'Elrond',
+    'IOTA',
+    'Filecoin'
+]
 
 def get_news(api_key, company_name, num_articles=100):
     # Get the date for one day ago
@@ -71,21 +126,16 @@ def main():
         if text:
             sentiment = analyzer.polarity_scores(text)
             print(f"Text: {text}")
-            print('')
-            print(f"The negative Sentiment is: {sentiment['neg']}")
-            print(f"The neutral Sentiment is: {sentiment['neu']}")
-            print(f"The positive Sentiment is: {sentiment['pos']}")
-            print(f"The compound Sentiment is: {sentiment['compound']}")
-
-            if sentiment['pos'] > sentiment['neg']:
-                print('Buy')
-            elif sentiment['pos'] < sentiment['neg']:
-                print('Sell')
+            print(f"The compound Sentiment for {company_name} is: {sentiment['compound']} the positive Sentiment is: {sentiment['pos']} the negative sentiment is {sentiment['neg']} and neutral sentiment is {sentiment['neu']}")
+            if sentiment['pos'] > sentiment['neg']*2.5:
+                print(f'Buy {company_name}')
+            elif sentiment['pos'] < sentiment['neg']*2.5:
+                print(f'Sell {company_name}')
             else:
-                print('Hold')
-        else:
-            print(f"No relevant articles found for {company_name}")
-
+                print(f'Hold {company_name}')
+        # else:
+        #     print(f"No relevant articles found for {company_name}")
 main()
-#completed 
-#on 18 june showing buy for apple and sell for reliance
+
+
+# so now only trade buy for the stocks which are here
