@@ -107,15 +107,15 @@ class ADXMOMENTUM(Broker):
         (self.data['strategy_gb'].iloc[self.split:].cumsum() * 100).plot(label='Gradient Boosting Strategy')
 
     def Signal(self):
-        self.data['Signal'] = 0  
-        for i in range(self.split, len(self.data)):
-            if (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) > 0) and \
-               (((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) > 0) and \
-               (self.data['Momentum'].iloc[i] > 0) and (self.data['position_gb'].iloc[i] == 1):
+        self.data.loc[:, 'Signal'] = 0
+        for i in range(int(self.split), int(len(self.data))):
+            if (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) > 0) and (
+                    ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) > 0) and (
+                    self.data['Momentum'].iloc[i] > 0) and self.data['position_gb'].iloc[i] == 1:
                 self.data['Signal'].iloc[i] = 1
-            elif (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) < 0) and \
-                 (((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) < 0) and \
-                 (self.data['Momentum'].iloc[i] < 0) and (self.data['position_gb'].iloc[i] == -1):
+            elif (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) < 0) and (
+                    ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) < 0) and (
+                    self.data['Momentum'].iloc[i] < 0) and self.data['position_gb'].iloc[i] == -1:
                 self.data['Signal'].iloc[i] = -1
         return self.data
 
