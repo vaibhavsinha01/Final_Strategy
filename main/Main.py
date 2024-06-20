@@ -118,7 +118,7 @@ class StrategyName:
         return no_of_wins, no_of_losses, no_of_noreturn, win_rate, error_rate
 
     def Signal(self):
-        self.data.loc[:, 'Signal'] = 0  
+        self.data.loc[:, 'Signal'] = 0
         for i in range(int(self.split), int(len(self.data))):
             if (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) > 0) and (
                     ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) > 0) and (
@@ -126,7 +126,7 @@ class StrategyName:
                 self.data['Signal'].iloc[i] = 1
             elif (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) < 0) and (
                     ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) < 0) and (
-                    self.data['Momentum'].iloc[i] < 0)  == -1:
+                    self.data['Momentum'].iloc[i] < 0) and self.data['position_gb'].iloc[i] == -1:
                 self.data['Signal'].iloc[i] = -1
         return self.data
 
@@ -152,7 +152,8 @@ class StrategyName:
                             'EntryPrice': entry_price,
                             'ExitPrice': exit_price,
                             'PnL': pl,
-                            'Quantity': quantity
+                            'Quantity': quantity,
+                            'Signal': self.data['Signal'].iloc[i]
                         })
                         break
                     elif self.data['Close'].iloc[j] <= stop_loss:
@@ -163,7 +164,39 @@ class StrategyName:
                             'EntryPrice': entry_price,
                             'ExitPrice': exit_price,
                             'PnL': pl,
-                            'Quantity': quantity
+                            'Quantity': quantity,
+                            'Signal': self.data['Signal'].iloc[i]
+                        })
+                        break
+        for i in range(int(len(self.data))):
+            if self.data['Signal'].iloc[i] == -1:
+                entry_price = self.data['Close'].iloc[i]
+                quantity = math.floor(self.capital / entry_price)
+                take_profit = self.data['Close'].iloc[i]-self.data['ATR'].iloc[i]*2
+                stop_loss = self.data['Close'].iloc[i]+self.data['ATR'].iloc[i]*1
+                for j in range(i, int(len(self.data))):
+                    if self.data['Close'].iloc[j] <= take_profit:
+                        exit_price = take_profit
+                        pl = (exit_price - entry_price) * quantity * -1
+                        final_capital += pl
+                        positions.append({
+                            'EntryPrice': entry_price,
+                            'ExitPrice': exit_price,
+                            'PnL': pl,
+                            'Quantity': quantity,
+                            'Signal': self.data['Signal'].iloc[i]
+                        })
+                        break
+                    elif self.data['Close'].iloc[j] >= stop_loss:
+                        exit_price = stop_loss
+                        pl = (exit_price - entry_price) * quantity * -1
+                        final_capital += pl
+                        positions.append({
+                            'EntryPrice': entry_price,
+                            'ExitPrice': exit_price,
+                            'PnL': pl,
+                            'Quantity': quantity,
+                            'Signal': self.data['Signal'].iloc[i]
                         })
                         break
         print(positions)

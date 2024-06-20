@@ -134,7 +134,7 @@ class ADXMOMENTUM(Broker):
             print(self.data['Signal'].iloc[-1])
 
 def main():
-    stocks = ['BTCUSDT']
+    stocks = ['ETHUSDT']
     while True:
         for stock in stocks:
             session = ADXMOMENTUM()
