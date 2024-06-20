@@ -129,7 +129,12 @@ class StrategyName:
         return self.data
 
     def ExecuteTrades(self):
-        pass
+        if self.data['Signal']==1:
+            print("the buy order has been placed")
+        elif self.data['Signal']==-1:
+            print("the sell order has been placed")
+        else:
+            print("no order will be placed")
 
     def LogicPl(self):
         self.capital=10000
@@ -201,6 +206,7 @@ def main():
         session.Signal()
         session.LogicPl()
         session.PlotGraph(stock)
+        session.ExecuteTrades()
             
         session.data.to_csv(os.path.join('data', f'file_{stock}.csv'))
         print(session.data)
