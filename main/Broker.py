@@ -1,5 +1,7 @@
 from pybit.unified_trading import HTTP
-import main.Creds as Creds
+import Creds
+
+#the funciton of this code is to hold funcitons of the broker wrapper
 
 class Broker:
     def __init__(self):
@@ -92,4 +94,5 @@ class Broker:
             category=category,
             symbol=symbol
 ))
+
 

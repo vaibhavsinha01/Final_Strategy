@@ -7,6 +7,8 @@ from backtesting.test import EURUSD,GOOG
 import matplotlib.pyplot as plt
 import datetime
 
+#the function of this code is to check the backtesting results for the code
+
 startdate=datetime.datetime(2024,4,23)
 enddate=datetime.datetime(2024,6,20)
 

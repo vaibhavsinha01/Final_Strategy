@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+#the function of this script is to tell which stocks to trade in
+
 """stocks = [
     'Apple Inc.',
     'Microsoft Corporation',

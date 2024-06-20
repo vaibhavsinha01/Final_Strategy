@@ -16,11 +16,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.neural_network import MLPRegressor
 from sklearn.linear_model import BayesianRidge
 
-# The gradient model is working good on 15m with a win rate of above 55-60% in almost all
-# MLP doesn't work and the best is probably random forest.
-# for AAPL the SVR/MLP model is showing a win rate of 100 % so check that.
-# for GOOGL the SVR has 0% win rate and MLP has 100% win rate so check that error.
-# Download data
+#the function of this script is to check which ml model works best for a stock
 
 startdate=datetime.datetime(2024,4,22)
 enddate=datetime.datetime(2024,6,20)

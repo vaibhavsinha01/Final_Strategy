@@ -15,7 +15,9 @@ from sklearn.linear_model import BayesianRidge
 import matplotlib.pyplot as plt
 import math
 
-# Define your start and end dates
+
+#the funciton of this code is to find the logicpl and compile it with machine learning model
+
 startdate = datetime.datetime(2024, 4, 22)
 enddate = datetime.datetime(2024, 6, 20)
 stocks=['NVDA']
