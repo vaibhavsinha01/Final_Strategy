@@ -1,0 +1,12 @@
+,Company,Compound Sentiment,Positive Sentiment,Negative Sentiment,Neutral Sentiment,Buy/Sell/Hold
+0,Bitcoin,-0.9961,0.068,0.113,0.819,-1
+1,Ethereum,0.9969,0.134,0.039,0.827,1
+2,Cardano,0.1179,0.083,0.08,0.837,0
+3,Solana,0.8126,0.08,0.0,0.92,1
+4,Ripple (XRP),0.5994,0.179,0.119,0.702,1
+5,Dogecoin,0.6747,0.044,0.012,0.944,1
+6,Shiba Inu,-0.8519,0.063,0.112,0.825,-1
+7,Litecoin,-0.6124,0.0,0.208,0.792,-1
+8,Chainlink,-0.6908,0.0,0.231,0.769,-1
+9,Stellar,0.9432,0.185,0.0,0.815,1
+10,Tron,-0.296,0.036,0.067,0.897,-1
