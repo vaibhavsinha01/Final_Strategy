@@ -16,16 +16,16 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.neural_network import MLPRegressor
 from sklearn.linear_model import BayesianRidge
 
-
+# The gradient model is working good on 15m with a win rate of above 55-60% in almost all
 # MLP doesn't work and the best is probably random forest.
 # for AAPL the SVR/MLP model is showing a win rate of 100 % so check that.
 # for GOOGL the SVR has 0% win rate and MLP has 100% win rate so check that error.
 # Download data
 
-startdate=datetime.datetime(2024,4,24)
+startdate=datetime.datetime(2024,4,22)
 enddate=datetime.datetime(2024,6,20)
 
-data = yf.download('GOOGL',start=startdate,end=enddate,interval='15m')
+data = yf.download('RELIANCE.NS',start=startdate,end=enddate,interval='15m')
 data.drop('Adj Close', axis=1, inplace=True)
 
 def feature_engineering(data):
@@ -39,6 +39,9 @@ def feature_engineering(data):
     data['Donchian_Low'] = talib.MIN(data['Low'], timeperiod=5)
     data['ADX'] = talib.ADX(data['High'],data['Low'],data['Close'],timeperiod=14)
     data['MOM'] = talib.MOM(data['Close'],timeperiod=14)
+    data['slope7'] = (data['Close'].shift(8)-data['Close'].shift(1))/7
+    data['slope80'] = (data['Close'].shift(8)-data['Close'].shift(1))/80
+    data['slope160'] = (data['Close'].shift(8)-data['Close'].shift(1))/160
     return data
 
 # Apply feature engineering
@@ -50,10 +53,10 @@ split = int(0.8 * len(df))
 # Check for NaN values in the DataFrame before splitting
 df.dropna(inplace=True)
 
-x_train = df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[:split]
+x_train = df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[:split]
 y_train = df['returns'].iloc[:split]  # No need to use double brackets for y_train
-x_test = df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[split:]
-y_test = df['returns'].iloc[split:]  # No need to use double brackets for y_test
+# x_test = df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[split:]
+# y_test = df['returns'].iloc[split:]  # No need to use double brackets for y_test
 
 # Ensure no NaN values in training data after splitting
 x_train.dropna(inplace=True)
@@ -79,14 +82,14 @@ reg6.fit(x_train, y_train)
 reg7.fit(x_train, y_train)
 
 # Predict
-df['predict'] = reg.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict1'] = reg1.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict2'] = reg2.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict3'] = reg3.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict4'] = reg4.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict5'] = reg5.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict6'] = reg6.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict7'] = reg7.predict(df[['sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict'] = reg.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict1'] = reg1.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict2'] = reg2.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict3'] = reg3.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict4'] = reg4.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict5'] = reg5.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict6'] = reg6.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+df['predict7'] = reg7.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
 
 
 # Plot the prediction
