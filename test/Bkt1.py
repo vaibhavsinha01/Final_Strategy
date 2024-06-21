@@ -6,6 +6,16 @@ from backtesting import Backtest,Strategy
 from backtesting.test import EURUSD,GOOG
 import matplotlib.pyplot as plt
 import datetime
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.svm import SVR
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.neural_network import MLPRegressor
+from sklearn.linear_model import BayesianRidge
+
+#the function of this code is to check the backtesting results for the code
 
 startdate=datetime.datetime(2024,4,23)
 enddate=datetime.datetime(2024,6,20)
@@ -24,6 +34,9 @@ def Fetchdata(stock):
 class ADXMOMENTUM(Strategy):
     stlo=97
     tkpr=103
+    """multiplier1=200
+    multiplier2=200"""
+
     def init(self):
         self.sma7=self.I(talib.SMA,self.data.Close,timeperiod=7)
         self.sma80=self.I(talib.SMA,self.data.Close,timeperiod=80)
@@ -38,19 +51,31 @@ class ADXMOMENTUM(Strategy):
         if (((self.sma80[-1] - self.sma80[-21]) / 20) > 0) and (((self.adx[-1] - self.adx[-21]) / 20) > 0) and (self.MOM > 0) :
             self.position.close()
             self.buy(sl=(self.stlo*self.data.Close)/100,tp=(self.tkpr*self.data.Close)/100)
+            """self.buy(sl=self.data.Close-self.atr*(self.multiplier2/100),tp=self.data.Close+self.atr*(self.multiplier1/100))"""
+
         elif (((self.sma80[-1] - self.sma80[-21]) / 20) < 0) and (((self.adx[-1] - self.adx[-21]) / 20) < 0) and (self.MOM < 0) :
             self.position.close()
             self.sell(tp=(self.stlo*self.data.Close)/100,sl=(self.tkpr*self.data.Close)/100)
+            """self.sell(tp=self.data.Close-self.atr*(self.multiplier2/100),sl=self.data.Close+self.atr*(self.multiplier1/100))"""
 
 def main():
     data=Fetchdata('NVDA')
     bt=Backtest(data,ADXMOMENTUM,cash=10000)
-    st=bt.optimize(
+    bt.run()
+    bt.optimize(
         stlo=range(90,98,1),
         tkpr=range(102,110,1),
         maximize=optimfunc
     )
-    print(st)
-
+    print(bt)
+    bt.plot()
 
 main()
+
+#alternative for backtesting
+#1)
+"""stlo=range(90,98,1),
+tkpr=range(102,110,1),"""
+#2)
+"""multiplier1=range(100,300,10),
+multiplier2=range(100,300,10),"""

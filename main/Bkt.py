@@ -16,7 +16,7 @@ def optimfunc(series):
     if series['# Trades']<10:
         return -1
     else:
-        return ['Final Capital']
+        return ['Final Capital [$]']
 
 def Fetchdata(stock):
     data=yf.download(stock,start=startdate,end=enddate,interval='15m')
@@ -40,7 +40,6 @@ class ADXMOMENTUM(Strategy):
         self.donchian=self.I(talib.MAX,self.data.High,timeperiod=20)-self.I(talib.MIN,self.data.Low,timeperiod=20)
 
     def next(self):
-
         if (((self.sma80[-1] - self.sma80[-21]) / 20) > 0) and (((self.adx[-1] - self.adx[-21]) / 20) > 0) and (self.MOM > 0) :
             self.position.close()
             self.buy(sl=(self.stlo*self.data.Close)/100,tp=(self.tkpr*self.data.Close)/100)
@@ -59,7 +58,6 @@ def main():
         stlo=range(90,98,1),
         tkpr=range(102,110,1),
         maximize=optimfunc
-        
     )
     print(bt)
     bt.plot()

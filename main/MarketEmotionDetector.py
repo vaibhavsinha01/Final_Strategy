@@ -129,9 +129,9 @@ def main():
             sentiment = analyzer.polarity_scores(text)
             print(f"Text: {text}")
             print(f"The compound Sentiment for {company_name} is: {sentiment['compound']} the positive Sentiment is: {sentiment['pos']} the negative sentiment is {sentiment['neg']} and neutral sentiment is {sentiment['neu']}")
-            if sentiment['pos'] > sentiment['neg']*2.5:
+            if sentiment['pos'] > sentiment['neg']*1.5:
                 print(f'Buy {company_name}')
-            elif sentiment['pos'] < sentiment['neg']*2.5:
+            elif sentiment['pos'] < sentiment['neg']*1.5:
                 print(f'Sell {company_name}')
             else:
                 print(f'Hold {company_name}')

@@ -18,8 +18,8 @@ from sklearn.linear_model import BayesianRidge
 
 #the function of this script is to check which ml model works best for a stock
 
-startdate=datetime.datetime(2024,4,22)
-enddate=datetime.datetime(2024,6,20)
+startdate=datetime.datetime(2024,4,24)
+enddate=datetime.datetime(2024,6,21)
 
 data = yf.download('RELIANCE.NS',start=startdate,end=enddate,interval='15m')
 data.drop('Adj Close', axis=1, inplace=True)
@@ -59,7 +59,7 @@ x_train.dropna(inplace=True)
 y_train.dropna(inplace=True)
 
 # Train the models
-reg = LinearRegression()
+reg  = LinearRegression()
 reg1 = DecisionTreeRegressor()  # Adding random_state for reproducibility
 reg2 = RandomForestRegressor()
 reg3 = GradientBoostingRegressor()
