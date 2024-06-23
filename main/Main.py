@@ -18,8 +18,8 @@ import math
 
 #the funciton of this code is to find the logicpl and compile it with machine learning model
 
-startdate = datetime.datetime(2024, 4, 22)
-enddate = datetime.datetime(2024, 6, 20)
+startdate = datetime.datetime(2024, 4, 24)
+enddate = datetime.datetime(2024, 6, 21)
 stocks=['NVDA']
 
 #msft,nvda,adani,aapl-winning
@@ -33,10 +33,11 @@ class StrategyName:
     def FetchData(self, ticker):
         self.data = yf.download(ticker, start=startdate, end=enddate, interval='15m')
         self.data.drop('Adj Close', axis=1, inplace=True)
-        self.data['returns'] = self.data['Close'].pct_change()
         return self.data
 
     def Functions(self):
+        self.data['returns'] = self.data['Close'].pct_change(1)
+        self.data['dema160'] = talib.DEMA(self.data['Close'], timeperiod=160)
         self.data['sma160'] = talib.SMA(self.data['Close'], timeperiod=160)
         self.data['sma80'] = talib.SMA(self.data['Close'], timeperiod=80)
         self.data['sma7'] = talib.SMA(self.data['Close'], timeperiod=7)
@@ -63,7 +64,7 @@ class StrategyName:
         """reg = KNeighborsRegressor()"""#11400
         """reg = BayesianRidge()"""
 
-        x_train = self.data[['sma7', 'ADX', 'Momentum']].iloc[:int(self.split)]
+        x_train = self.data[['sma7', 'ADX', 'Momentum','dema160']].iloc[:int(self.split)]
         y_train = self.data['returns'].iloc[:int(self.split)]
 
         x_train.dropna(inplace=True)
@@ -71,7 +72,7 @@ class StrategyName:
         
         reg.fit(x_train, y_train)
         
-        self.data['predict'] = reg.predict(self.data[['sma7', 'ADX', 'Momentum']])
+        self.data['predict'] = reg.predict(self.data[['sma7', 'ADX', 'Momentum','dema160']])
         self.data['position_gb'] = np.sign(self.data['predict'].shift(1))
         self.data['strategy_gb'] = self.data['returns'] * self.data['position_gb']
         
@@ -120,13 +121,13 @@ class StrategyName:
     def Signal(self):
         self.data.loc[:, 'Signal'] = 0
         for i in range(int(self.split), int(len(self.data))):
-            if (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) > 0) and (
-                    ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) > 0) and (
-                    self.data['Momentum'].iloc[i] > 0) and self.data['position_gb'].iloc[i] == 1:
+            if (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 10]) / 10) > 0) and (
+                    ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 10]) / 10) > 0) and (
+                    self.data['Momentum'].iloc[i] > 0) and (self.data['position_gb'].iloc[i] == 1) and (self.data['dema160'].iloc[i]<self.data['Close'].iloc[i]):
                 self.data['Signal'].iloc[i] = 1
-            elif (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 20]) / 20) < 0) and (
-                    ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 20]) / 20) < 0) and (
-                    self.data['Momentum'].iloc[i] < 0) and self.data['position_gb'].iloc[i] == -1:
+            elif (((self.data['sma7'].iloc[i] - self.data['sma7'].iloc[i - 10]) / 10) < 0) and (
+                    ((self.data['ADX'].iloc[i] - self.data['ADX'].iloc[i - 10]) / 10) < 0) and (
+                    self.data['Momentum'].iloc[i] < 0) and (self.data['position_gb'].iloc[i] == -1) and (self.data['dema160'].iloc[i]>self.data['Close'].iloc[i]):
                 self.data['Signal'].iloc[i] = -1
         return self.data
 

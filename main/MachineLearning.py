@@ -21,7 +21,8 @@ from sklearn.linear_model import BayesianRidge
 startdate=datetime.datetime(2024,4,24)
 enddate=datetime.datetime(2024,6,21)
 
-data = yf.download('RELIANCE.NS',start=startdate,end=enddate,interval='15m')
+"""data = yf.download('META',start=startdate,end=enddate,interval='15m')"""
+data = yf.download('RELIANCE.NS')
 data.drop('Adj Close', axis=1, inplace=True)
 
 def feature_engineering(data):
@@ -29,6 +30,7 @@ def feature_engineering(data):
     data['sma7'] = talib.SMA(data['Close'],timeperiod=7)
     data['sma80'] = talib.SMA(data['Close'],timeperiod=80)
     data['sma160'] = talib.SMA(data['Close'],timeperiod=160)
+    data['dema160'] = talib.DEMA(data['Close'],timeperiod=160)
     data['rsi'] = talib.RSI(data['Close'],timeperiod=7)
     data['atr'] = talib.ATR(data['High'],data['Low'],data['Close'],timeperiod=7)
     data['Donchian_High'] = talib.MAX(data['High'], timeperiod=5)
@@ -49,8 +51,10 @@ split = int(0.8 * len(df))
 # Check for NaN values in the DataFrame before splitting
 df.dropna(inplace=True)
 
-x_train = df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[:split]
-y_train = df['returns'].iloc[:split]  # No need to use double brackets for y_train
+"""x_train = df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[:split]
+y_train = df['returns'].iloc[:split]  # No need to use double brackets for y_train"""
+x_train = df[['sma7', 'ADX', 'MOM','dema160']].iloc[:split]
+y_train = df['returns'].iloc[:split]
 # x_test = df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']].iloc[split:]
 # y_test = df['returns'].iloc[split:]  # No need to use double brackets for y_test
 
@@ -78,14 +82,24 @@ reg6.fit(x_train, y_train)
 reg7.fit(x_train, y_train)
 
 # Predict
-df['predict'] = reg.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict1'] = reg1.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict2'] = reg2.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict3'] = reg3.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict4'] = reg4.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict5'] = reg5.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict6'] = reg6.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
-df['predict7'] = reg7.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict'] = reg.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict1'] = reg1.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict2'] = reg2.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict3'] = reg3.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict4'] = reg4.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict5'] = reg5.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict6'] = reg6.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+# df['predict7'] = reg7.predict(df[['Close','slope7','slope80','slope160','sma80', 'sma7', 'rsi', 'ADX', 'MOM', 'sma160','atr','Donchian_High','Donchian_Low']])
+
+
+df['predict'] = reg.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict1'] = reg1.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict2'] = reg2.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict3'] = reg3.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict4'] = reg4.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict5'] = reg5.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict6'] = reg6.predict(df[['sma7','ADX', 'MOM', 'dema160']])
+df['predict7'] = reg7.predict(df[['sma7','ADX', 'MOM', 'dema160']])
 
 
 # Plot the prediction
