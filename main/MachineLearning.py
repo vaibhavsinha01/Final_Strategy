@@ -18,11 +18,11 @@ from sklearn.linear_model import BayesianRidge
 
 #the function of this script is to check which ml model works best for a stock
 
-startdate=datetime.datetime(2024,4,24)
-enddate=datetime.datetime(2024,6,21)
+startdate=datetime.datetime(2024,4,27)
+enddate=datetime.datetime(2024,6,25)
 
 """data = yf.download('META',start=startdate,end=enddate,interval='15m')"""
-data = yf.download('RELIANCE.NS')
+data = yf.download('reliance.ns')
 data.drop('Adj Close', axis=1, inplace=True)
 
 def feature_engineering(data):

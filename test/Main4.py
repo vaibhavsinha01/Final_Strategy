@@ -18,9 +18,9 @@ import math
 
 #the funciton of this code is to find the logicpl and compile it with machine learning model
 
-startdate = datetime.datetime(2024, 4, 30)
-enddate = datetime.datetime(2024, 6, 27)
-stocks=['reliance.ns']
+startdate = datetime.datetime(2024, 4, 26)
+enddate = datetime.datetime(2024, 6, 24)
+stocks=['NVDA']
 
 #msft,nvda,adani,aapl-winning
 
@@ -65,10 +65,10 @@ class StrategyName:
         """reg = GradientBoostingRegressor()"""#`10857`
         """reg = LinearRegression()""" #10500
         """reg = DecisionTreeRegressor()"""#10857
-        """reg = RandomForestRegressor()"""#10857
+        reg = RandomForestRegressor()#10857
         """reg = SVR()"""#10150
         """reg = MLPRegressor()"""#10758
-        reg = KNeighborsRegressor()#11400
+        """reg = KNeighborsRegressor()"""#11400
         """reg = BayesianRidge()"""
 
         x_train = self.data[['sma7', 'ADX', 'Momentum','dema160']].iloc[:int(self.split)]
@@ -149,10 +149,10 @@ class StrategyName:
             if self.data['Signal'].iloc[i] == 1:
                 entry_price = self.data['Close'].iloc[i]
                 quantity = math.floor(self.capital / entry_price)
-                take_profit = self.data['Close'].iloc[i]+self.data['ATR'].iloc[i]*1
-                stop_loss = self.data['Close'].iloc[i]-self.data['ATR'].iloc[i]*1
-                # take_profit = self.data['r3'].iloc[i]
-                # stop_loss = self.data['s1'].iloc[i]
+                # take_profit = self.data['Close'].iloc[i]+self.data['ATR'].iloc[i]*2
+                # stop_loss = self.data['Close'].iloc[i]-self.data['ATR'].iloc[i]*1
+                take_profit = self.data['s3'].iloc[i]
+                stop_loss = self.data['r1'].iloc[i]
                 for j in range(i, int(len(self.data))):
                     if self.data['Close'].iloc[j] >= take_profit:
                         exit_price = take_profit
@@ -182,10 +182,10 @@ class StrategyName:
             if self.data['Signal'].iloc[i] == -1:
                 entry_price = self.data['Close'].iloc[i]
                 quantity = math.floor(self.capital / entry_price)
-                take_profit = self.data['Close'].iloc[i]-self.data['ATR'].iloc[i]*1
-                stop_loss = self.data['Close'].iloc[i]+self.data['ATR'].iloc[i]*1
-                # take_profit = self.data['r1'].iloc[i]
-                # stop_loss = self.data['s3'].iloc[i]
+                # take_profit = self.data['Close'].iloc[i]-self.data['ATR'].iloc[i]*2
+                # stop_loss = self.data['Close'].iloc[i]+self.data['ATR'].iloc[i]*1
+                take_profit = self.data['s3'].iloc[i]
+                stop_loss = self.data['r1'].iloc[i]
                 for j in range(i, int(len(self.data))):
                     if self.data['Close'].iloc[j] <= take_profit:
                         exit_price = take_profit
